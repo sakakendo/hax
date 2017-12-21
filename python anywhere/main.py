@@ -1,8 +1,8 @@
 
 # A very simple Flask Hello World app for you to get started with...
 
-import flask,os
-from flask import Flask,request,redirect,url_for,flash
+import flask,os,io
+from flask import Flask,request,redirect,url_for,flash,jsonify
 from flask_httpauth import HTTPBasicAuth
 from flask_httpauth import HTTPDigestAuth
 from werkzeug.utils import secure_filename
@@ -42,40 +42,17 @@ def digest():
 def dsession():
     return '<p>cookie </p><script src="javascript">console.log(document.coockie);</script><br><p>end of cookie</p>'
 
-UPLOAD_FOLDER = '/home/sakakedo/anywhere/files'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','c'])
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-@app.route('/uploads', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('upload_file'))
-
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
+@app.route('/upload/', methods=['POST','GET'])
+def upload():
+    if request.method == 'GET':
+        return 'post me'
+    if request.files is not None :
+        return 'input is'+request.files
+#        for file in request.files:
+#            return_value.join(file)
+#        return 'input_value is'+return_value
+    else:
+        return "no input file"
 @app.route('/uploaded')
 def uploaded():
     files = os.listdir('/home/sakakendo/anywhere/files')
@@ -93,3 +70,22 @@ def index():
 @app.route('/home')
 def home():
     return flask.render_template('index.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
