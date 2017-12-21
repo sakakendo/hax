@@ -42,17 +42,43 @@ def digest():
 def dsession():
     return '<p>cookie </p><script src="javascript">console.log(document.coockie);</script><br><p>end of cookie</p>'
 
-@app.route('/upload/', methods=['POST','GET'])
+@app.route('/uploads/', methods=['POST','GET'])
 def upload():
     if request.method == 'GET':
-        return 'post me'
-    if request.files is not None :
-        return 'input is'+request.files
-#        for file in request.files:
-#            return_value.join(file)
-#        return 'input_value is'+return_value
-    else:
-        return "no input file"
+        return """
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+            <form method="post">
+                <div class="form-group pull-left">
+                    <input type="file" id="upload_files" name="upload_files" multiple="multiple" class="form-control >
+                    <p class="help-block">you can upload some files</p>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="送信" class="form-control btn btn-primary";>
+                </div>
+                <div>
+                    <p id="file_status">no file</p>
+                    <script>
+                        p=document.getElementById("file_status");
+                        console.log(p.innerHTML);
+                        p.innerHTML ='no file is selected';
+                        console.log(p.innerHTML);
+
+                    	$("#upload_files").bind("change", function () {
+                			if (files.length==0) return false;
+                    		var filelist = "";
+                    		for(var i=0; i<$("#upload_files").files.length; i++){
+			                    filelist += "&nbsp;&nbsp;"+$("#upload_files").files[i].name + "<br>";
+		                    }
+		                    p.innerHTML = filelist;
+		                    console.log(fileslist);
+                    		//G_files = this.files;
+                    		//ファイル表示
+                    		//showFiles(G_files);
+                    	});
+                    </script>
+                </div>
+            </from>
+            """
 @app.route('/uploaded')
 def uploaded():
     files = os.listdir('/home/sakakendo/anywhere/files')
@@ -70,22 +96,3 @@ def index():
 @app.route('/home')
 def home():
     return flask.render_template('index.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
