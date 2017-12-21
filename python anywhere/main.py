@@ -42,7 +42,9 @@ def digest():
 def dsession():
     return '<p>cookie </p><script src="javascript">console.log(document.coockie);</script><br><p>end of cookie</p>'
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+UPLOAD_FOLDER = '/home/sakakedo/anywhere/files'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','c'])
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -63,8 +65,8 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
+            return redirect(url_for('upload_file'))
+
     return '''
     <!doctype html>
     <title>Upload new File</title>
@@ -74,29 +76,20 @@ def upload_file():
          <input type=submit value=Upload>
     </form>
     '''
+@app.route('/uploaded')
+def uploaded():
+    files = os.listdir('/home/sakakendo/anywhere/files')
+    return ''.join(files)
+
 @app.route('/')
 def index():
-    return 'Hello from Flask!<br><a href=/>index.html</a><br><a href=/basic>/basic</a><br><a href=/digest>/digest</a><a href=/uploads>uploads</a><p><input type="button" value="push me" onclick="alert();"></p><input type="file" name="file" id="file" value="file""></p>'
+    return '''
+        Hello from Flask!<br><a href=/>index.html</a><br><a href=/basic>/basic</a><br>
+        <a href=/digest>/digest</a><br><a href=/uploads>uploads</a>
+        <p><input type="button" value="push me" onclick="alert();"></p>
+        <input type="file" name="file" id="file" value="file""></p>
+        '''
 
 @app.route('/home')
 def home():
     return flask.render_template('index.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
