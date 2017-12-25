@@ -1,12 +1,26 @@
-
-import selenium 
+import requests
+from requests.auth import HTTPDigestAuth
+import selenium
 from selenium import webdriver
 
-user_agent = 'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.66 Safari/537.36'
-dcap = {
-    "phantomjs.page.settings.userAgent" : user_agent,
-    'marionette' : True
-}
+cookie_name = 'session_id'
 
-driver=webdriver.PhantomJS(executable_path="phantomjs-2.1.1-linux-x86_64/bin/phantomjs",desired_capabilities=dcap)
+s = requests.session()
+url = "http://sakakendo.pythonanywhere.com/digest"
+username = "XXX"
+password = "xxx"
+res = s.get(url, auth=HTTPDigestAuth(username,password))
+res.raise_for_status()
+print(res.status_code,res.content)
 
+"""
+cookie_value = s.cookies.get(cookie_name)
+
+driver=webdriver.PhantomJS(executable_path="phantomjs-2.1.1-linux-x86_64/bin/phantomjs")
+driver.get(url)
+driver.add_cookie({
+		'name': cookie_name,
+		'value': cookie_value,
+		'domain': 'sakakendo.pythonanywhere.com'})
+diver.get(url)
+"""
