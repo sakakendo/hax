@@ -1,8 +1,8 @@
 
 # A very simple Flask Hello World app for you to get started with...
 
-import flask,os
-from flask import Flask,request,redirect,url_for,flash
+import flask,os,io
+from flask import Flask,request,redirect,url_for,flash,jsonify
 from flask_httpauth import HTTPBasicAuth
 from flask_httpauth import HTTPDigestAuth
 from werkzeug.utils import secure_filename
@@ -42,40 +42,43 @@ def digest():
 def dsession():
     return '<p>cookie </p><script src="javascript">console.log(document.coockie);</script><br><p>end of cookie</p>'
 
-UPLOAD_FOLDER = '/home/sakakedo/anywhere/files'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','c'])
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+@app.route('/uploads/', methods=['POST','GET'])
+def upload():
+    if request.method == 'GET':
+        return """
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+            <form method="post">
+                <div class="form-group pull-left">
+                    <input type="file" id="upload_files" name="upload_files" multiple="multiple" class="form-control >
+                    <p class="help-block">you can upload some files</p>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="送信" class="form-control btn btn-primary";>
+                </div>
+                <div>
+                    <p id="file_status">no file</p>
+                    <script>
+                        p=document.getElementById("file_status");
+                        console.log(p.innerHTML);
+                        p.innerHTML ='no file is selected';
+                        console.log(p.innerHTML);
 
-@app.route('/uploads', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('upload_file'))
-
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
+                    	$("#upload_files").bind("change", function () {
+                			if (files.length==0) return false;
+                    		var filelist = "";
+                    		for(var i=0; i<$("#upload_files").files.length; i++){
+			                    filelist += "&nbsp;&nbsp;"+$("#upload_files").files[i].name + "<br>";
+		                    }
+		                    p.innerHTML = filelist;
+		                    console.log(fileslist);
+                    		//G_files = this.files;
+                    		//ファイル表示
+                    		//showFiles(G_files);
+                    	});
+                    </script>
+                </div>
+            </from>
+            """
 @app.route('/uploaded')
 def uploaded():
     files = os.listdir('/home/sakakendo/anywhere/files')
